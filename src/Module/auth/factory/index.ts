@@ -6,7 +6,7 @@ import { IRegisterDTO } from "../auth.dto";
 import { User } from "../etily";
 
 export class AuthFectory {
-     register(registerDTO : IRegisterDTO){
+     creat(registerDTO : IRegisterDTO){
         const user = new User
         user.fullName = registerDTO.fullName
         user.email = registerDTO.email

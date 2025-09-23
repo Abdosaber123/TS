@@ -7,7 +7,7 @@ export class UserRepository extends AbstractReporistory<IUser> {
     constructor(){
         super(User)
     }
-    getAlluser (filter:RootFilterQuery<IUser>){
-        this.model.findOne(filter)
+    async getAlluser (filter:RootFilterQuery<IUser>){
+      await  this.model.findOne(filter)
     }
 }

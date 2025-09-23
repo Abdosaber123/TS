@@ -6,36 +6,42 @@ const factory_1 = require("./factory");
 const sendEmail_1 = require("../../utils/sendEmail");
 const hashpassword_1 = require("../../utils/hashpassword");
 const otp_1 = require("../../utils/otp");
+const token_1 = require("../../utils/token");
+const console_1 = require("console");
+const provider_1 = require("./provider");
 class AuthService {
     userRepository = new user_reporistory_1.UserRepository();
     authFectory = new factory_1.AuthFectory();
     constructor() { }
     register = async (req, res, next) => {
         const registerDTO = req.body;
+        (0, console_1.log)("wsl l hna");
         const userExists = await this.userRepository.exists({ email: registerDTO.email });
         if (userExists) {
             throw new error_1.ConflictExpection("user is Exitst");
         }
-        const user = this.authFectory.register(registerDTO);
-        await (0, sendEmail_1.sendEmail)({
-            to: registerDTO.email,
-            subject: "verfy your account",
-            html: `<p> Your otp to verfy your account ${user.otp}</p>`
-        });
+        const user = this.authFectory.creat(registerDTO);
         const createdUser = await this.userRepository.create(user);
-        return res.status(200).json({ message: "register", success: true, data: createdUser });
+        return res.status(200).json({ message: "register", success: true, data: { id: createdUser.id } });
     };
     verfyAccount = async (req, res, next) => {
         const verfy = req.body;
-        console.log(verfy.email, verfy.otp);
-        const userExists = await this.userRepository.getOne({ email: verfy.email, otp: verfy.otp });
-        if (!userExists) {
-            throw new error_1.NotFoundExpection("user Not Found");
-        }
-        userExists.isVerfy = true;
-        userExists.otp = undefined;
-        userExists.expireOtp = undefined;
-        await userExists.save();
+        await provider_1.authProvider.checkOTP(verfy);
+        this.userRepository.update({ email: verfy.email }, { isVerfy: true, $unset: { otp: "", expireOtp: "" } });
+        // const userExists = await this.userRepository.getOne({email:verfy.email , otp:verfy.otp })
+        // if(!userExists){
+        //     throw new NotFoundExpection("user Not Found")
+        // }
+        // if(userExists.otp != verfy.otp){
+        //      throw new BadRequestExpection("invalid OTP")
+        // }
+        // if(userExists.expireOtp < new Date()){
+        //     throw new BadRequestExpection("invalid OTP")
+        // }
+        // userExists.isVerfy = true
+        // userExists.otp = undefined as unknown as string
+        // userExists.expireOtp = undefined as unknown as Date
+        // await userExists.save()
         return res.status(200).json({ message: "Verfy is Successfuly", success: true });
     };
     login = async (req, res, next) => {
@@ -54,7 +60,8 @@ class AuthService {
         if (userExists.isVerfy == false) {
             throw new error_1.NotAuthriztionExpection("plese Verfy your Account");
         }
-        return res.status(201).json({ message: "Login is Success", Succsess: true });
+        const accsessToken = (0, token_1.geralToken)({ payload: { id: userExists.id }, option: { expiresIn: "15m" } });
+        return res.status(201).json({ message: "Login is Success", Succsess: true, token: { accsessToken } });
     };
     resendOTP = async (req, res, next) => {
         const resend = req.body;

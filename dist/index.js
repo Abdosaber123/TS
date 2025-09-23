@@ -7,10 +7,11 @@ const console_1 = require("console");
 const express_1 = __importDefault(require("express"));
 const app_controller_1 = require("./app.controller");
 const dotenv_1 = require("dotenv");
-(0, dotenv_1.config)({ path: "./config/local.env" });
+const local_config_1 = require("./config/env/local.config");
+(0, dotenv_1.config)();
 const app = (0, express_1.default)();
 (0, app_controller_1.bootsrap)(app, express_1.default);
-const port = 3000;
+const port = local_config_1.devConfig.DB_PORT;
 app.listen(port, () => {
     (0, console_1.log)("server is running on port ", port);
 });

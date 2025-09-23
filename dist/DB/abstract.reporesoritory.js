@@ -8,6 +8,7 @@ class AbstractReporistory {
     }
     async create(item) {
         const doc = new this.model(item);
+        doc["isNew"] = true;
         return await doc.save();
     }
     async exists(filter, projection, option) {

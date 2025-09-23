@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userShema = void 0;
 const mongoose_1 = require("mongoose");
 const enum_1 = require("../../../utils/common/enum");
+const sendEmail_1 = require("../../../utils/sendEmail");
 exports.userShema = new mongoose_1.Schema({
     firstName: {
         type: String,
@@ -63,4 +64,9 @@ exports.userShema.virtual("fullName").get(function () {
     const [fName, lName] = value.split(" ");
     this.firstName = fName;
     this.lastName = lName;
+});
+exports.userShema.pre("save", async function (next) {
+    if (this.userAgent != enum_1.USER_AGENT.google && this["isNew"] == true) {
+        await (0, sendEmail_1.sendEmail)({ to: this.email, subject: "Confirm Verfy Your Accound", html: `<h1>Verfy your Acoount is otp ${this.otp}</h1>` });
+    }
 });

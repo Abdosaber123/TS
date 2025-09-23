@@ -7,8 +7,8 @@ class UserRepository extends abstract_reporesoritory_1.AbstractReporistory {
     constructor() {
         super(user_model_1.User);
     }
-    getAlluser(filter) {
-        this.model.findOne(filter);
+    async getAlluser(filter) {
+        await this.model.findOne(filter);
     }
 }
 exports.UserRepository = UserRepository;

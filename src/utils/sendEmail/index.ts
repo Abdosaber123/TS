@@ -1,18 +1,17 @@
 import  nodemailer from "nodemailer"
-export const sendEmail = async ({to, subject, html}: {to: string, subject: string, html: string})=>{
+import { devConfig } from "../../config/env/local.config"
+import { MailOptions } from "nodemailer/lib/json-transport"
+export const sendEmail = async (mailOptin:MailOptions)=>{
     const transport = nodemailer.createTransport({
-        host:"smtp.gmail.com",
-        port:587,
+        // host:"smtp.gmail.com",
+        // port:587,
+        service:"gmail",
         auth:{
-            user:"blaza.cf0@gmail.com",
+            user:devConfig.EMAIL_USER,
             pass:"gngcqaiaagejlgrh"
         }
     })
-    await transport.sendMail({
-        from:"Saraha <blaza.cf0@gmail.com",
-        to,
-        subject,
-        html
-    })
+    mailOptin.from = `Social App <${devConfig.EMAIL_USER}`
+    await transport.sendMail(mailOptin)
 }
 

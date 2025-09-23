@@ -5,20 +5,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const sendEmail = async ({ to, subject, html }) => {
+const local_config_1 = require("../../config/env/local.config");
+const sendEmail = async (mailOptin) => {
     const transport = nodemailer_1.default.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
+        // host:"smtp.gmail.com",
+        // port:587,
+        service: "gmail",
         auth: {
-            user: "blaza.cf0@gmail.com",
+            user: local_config_1.devConfig.EMAIL_USER,
             pass: "gngcqaiaagejlgrh"
         }
     });
-    await transport.sendMail({
-        from: "Saraha <blaza.cf0@gmail.com",
-        to,
-        subject,
-        html
-    });
+    mailOptin.from = `Social App <${local_config_1.devConfig.EMAIL_USER}`;
+    await transport.sendMail(mailOptin);
 };
 exports.sendEmail = sendEmail;

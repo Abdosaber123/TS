@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
+import { devConfig } from "../config/env/local.config";
+// import { devConfig } from './../../config/env/local.config';
 export const connectDB = async ()=>{
-    await mongoose.connect(process.env.DB_URL as string).then(()=>{
+    await mongoose.connect(devConfig.DB_URL as string).then(()=>{
         console.log("DB Connection Succssefuly");
         
     }).catch((err)=>{

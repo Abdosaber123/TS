@@ -4,6 +4,7 @@ export abstract class AbstractReporistory<T> {
     constructor(protected model: Model<T>){}
     async create(item: Partial <T>){
      const doc = new this.model(item)
+     doc["isNew"]=true
      return await doc.save()
     }
     async exists (filter:RootFilterQuery<T> , projection? : ProjectionType<T> , option? : QueryOptions){
@@ -12,7 +13,7 @@ export abstract class AbstractReporistory<T> {
     async getOne (filter:RootFilterQuery<T> , projection? : ProjectionType<T> , option? : QueryOptions){
      return await  this.model.findOne(filter,projection , option)
     }
-    async update (filter : RootFilterQuery<T> , update : Partial<T> , option : MongooseBaseQueryOptions){
+    async update (filter : RootFilterQuery<T> , update : UpdateQuery<T>, option? : MongooseBaseQueryOptions){
      await this.model.updateOne(filter ,update ,option )
     }
     async delte (filter : RootFilterQuery<T> ){

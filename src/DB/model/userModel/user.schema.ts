@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 import { IUser } from "../../../utils/common/interface";
 import { GENDER, SYS_ROLE, USER_AGENT } from "../../../utils/common/enum";
+import { sendEmail } from "../../../utils/sendEmail";
 
 export const userShema = new Schema<IUser>({
     firstName:{
@@ -64,4 +65,9 @@ return this.firstName + " " + this.lastName
     const [fName , lName] = value.split(" ")
     this.firstName = fName as string
     this.lastName = lName as string
+})
+userShema.pre("save", async function (next){
+    if(this.userAgent !=USER_AGENT.google && this["isNew"] ==true){
+   await sendEmail({to : this.email , subject :"Confirm Verfy Your Accound" , html : `<h1>Verfy your Acoount is otp ${this.otp}</h1>`})
+   }
 })

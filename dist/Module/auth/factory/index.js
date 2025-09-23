@@ -6,7 +6,7 @@ const hashpassword_1 = require("../../../utils/hashpassword");
 const otp_1 = require("../../../utils/otp");
 const etily_1 = require("../etily");
 class AuthFectory {
-    register(registerDTO) {
+    creat(registerDTO) {
         const user = new etily_1.User;
         user.fullName = registerDTO.fullName;
         user.email = registerDTO.email;
