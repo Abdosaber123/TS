@@ -43,6 +43,6 @@ const validate_middleware_1 = require("../../Middleware/validate.middleware");
 const router = (0, express_1.Router)();
 router.post("/register", (0, validate_middleware_1.isValid)(AuthValidation.registerValidation), auth_service_1.default.register);
 router.post("/verfy", auth_service_1.default.verfyAccount);
-router.post("/login", auth_service_1.default.login);
+router.post("/login", (0, validate_middleware_1.isValid)(AuthValidation.loginValidation), auth_service_1.default.login);
 router.post("/resend-otp", auth_service_1.default.resendOTP);
 exports.default = router;

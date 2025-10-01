@@ -64,7 +64,7 @@ import { authProvider } from "./provider";
         if(userExists.isVerfy == false){
             throw new NotAuthriztionExpection("plese Verfy your Account")
         }
-        const accsessToken = geralToken({payload:{_id:userExists.id , role: userExists.role} , option :{expiresIn :"15m"}}) 
+        const accsessToken = geralToken({payload:{_id:userExists.id , role: userExists.role} , option :{expiresIn :"1h"}}) 
         return res.status(201).json({message:"Login is Success" , Succsess:true , token : {accsessToken}})
     }
     resendOTP = async (req : Request , res : Response , next : NextFunction)=>{

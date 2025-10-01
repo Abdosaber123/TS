@@ -60,7 +60,7 @@ class AuthService {
         if (userExists.isVerfy == false) {
             throw new error_1.NotAuthriztionExpection("plese Verfy your Account");
         }
-        const accsessToken = (0, token_1.geralToken)({ payload: { id: userExists.id }, option: { expiresIn: "15m" } });
+        const accsessToken = (0, token_1.geralToken)({ payload: { _id: userExists.id, role: userExists.role }, option: { expiresIn: "1h" } });
         return res.status(201).json({ message: "Login is Success", Succsess: true, token: { accsessToken } });
     };
     resendOTP = async (req, res, next) => {
@@ -76,6 +76,7 @@ class AuthService {
             subject: "verfy your account",
             html: `<p> Succsess Resend OTP ${otp}</p>`
         });
+        // this.userRepository.update({email:userExists.email }, {otp , expireOtp:expire})
         userExists.otp = otp;
         userExists.expireOtp = expire;
         await userExists.save();
