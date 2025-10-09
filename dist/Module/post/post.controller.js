@@ -12,4 +12,5 @@ router.use("/:postId/comment", comment_controller_1.default);
 router.post("/", (0, authViryFy_1.isAuthenticated)(), post_service_1.default.createPost);
 router.patch("/:id", (0, authViryFy_1.isAuthenticated)(), post_service_1.default.addReaction);
 router.get("/:id", post_service_1.default.getSpectafic);
+router.delete("/:id", (0, authViryFy_1.isAuthenticated)(), post_service_1.default.deletePost);
 exports.default = router;

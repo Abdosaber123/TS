@@ -8,4 +8,7 @@ const comment_service_1 = __importDefault(require("./comment.service"));
 const authViryFy_1 = require("../../Middleware/authViryFy");
 const router = (0, express_1.Router)({ mergeParams: true });
 router.post("/{:id}", (0, authViryFy_1.isAuthenticated)(), comment_service_1.default.create);
+router.get("/:id", comment_service_1.default.getSpectific);
+router.delete("/:id", comment_service_1.default.deleteComment);
+router.patch("/:id", (0, authViryFy_1.isAuthenticated)(), comment_service_1.default.addReaction);
 exports.default = router;

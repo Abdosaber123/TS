@@ -3,6 +3,7 @@ import { GENDER, REACTION, SYS_ROLE, USER_AGENT } from "../enum";
 import { ObjectId } from "mongoose";
 
 export interface IUser {
+    id:string
     firstName?: string,
     lastName?:string,
     fullName:string,
@@ -48,7 +49,7 @@ export interface IComment {
     _id:ObjectId
     userId:ObjectId,
     postId:ObjectId,
-    parentId: ObjectId[],
+    parentId: ObjectId,
     attachment?:IAttachment,
     content:string
     mention?:ObjectId[],

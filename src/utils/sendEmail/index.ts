@@ -9,9 +9,10 @@ export const sendEmail = async (mailOptin:MailOptions)=>{
         auth:{
             user:devConfig.EMAIL_USER,
             pass:"gngcqaiaagejlgrh"
-        }
+        },
     })
     mailOptin.from = `Social App <${devConfig.EMAIL_USER}`
+
     await transport.sendMail(mailOptin)
 }
 

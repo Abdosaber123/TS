@@ -7,11 +7,10 @@ export class FactoryComment {
     createComment(creatComment:commentDTO , post:IPost , user:IUser , comment?:IComment) {
         const newComment = new Comment()
         newComment.content = creatComment.content
-        newComment.postId = post._id
+        newComment.postId = post._id || comment.postId
         newComment.userId = user._id
         newComment.reaction= []
-       comment? newComment.parentId  = comment.parentId :[]
-       comment? newComment.parentId.push(comment._id) : []
+        newComment.parentId  = comment?._id
         return newComment
     }
 }

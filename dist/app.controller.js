@@ -8,11 +8,18 @@ const auth_controller_1 = __importDefault(require("./Module/auth/auth.controller
 const post_controller_1 = __importDefault(require("./Module/post/post.controller"));
 const connectionDB_1 = require("./DB/connectionDB");
 const user_controller_1 = __importDefault(require("./Module/user/user.controller"));
+const comment_controller_1 = __importDefault(require("./Module/comment/comment.controller"));
+const cors_1 = __importDefault(require("cors"));
 function bootsrap(app, express) {
+    app.use((0, cors_1.default)({
+        origin: "http://localhost:5173", // ده عنوان الـ frontend
+        credentials: true, // لو بتستخدم cookies أو jwt في header
+    }));
     app.use(express.json());
     app.use("/auth", auth_controller_1.default);
     app.use("/user", user_controller_1.default);
     app.use("/post", post_controller_1.default);
+    app.use("/comment", comment_controller_1.default);
     app.use('/{*dummy}', (req, res, next) => {
         return res.status(404).json({ message: "Not Found URL" });
     });

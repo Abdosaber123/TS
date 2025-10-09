@@ -1,19 +1,9 @@
 import { Schema } from "mongoose";
 import { IPost, IRection } from "../../utils/common/interface";
-import { REACTION } from "../../utils/common/enum";
+import { Comment } from "../comment/comment.model";
+import { reactionSchema } from "../reaction/reaction.schema";
 
-export const reactionSchema = new Schema<IRection>({
-    reaction:{
-        type:Number,
-        enum:REACTION,
-        default:REACTION.like
-    },
-    userId:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        require:true
-    }
-},{timestamps:true})
+
 export const postSchema = new Schema<IPost>({
     userId:{
         type:Schema.Types.ObjectId,
@@ -35,3 +25,11 @@ postSchema.virtual("comments" ,{
     foreignField:"postId",
     ref:"Comment"
 })
+postSchema.pre("deleteOne",async function(next){
+    // const filter = typeof this.getFilter =='function'? this.getFilter():{}
+    const filter =  typeof this.getFilter =='function' ?this.getFilter():{} 
+    await Comment.deleteMany({postId:filter._id})
+    next()
+} )
+
+

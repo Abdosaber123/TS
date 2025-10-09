@@ -22,7 +22,8 @@ export const userShema = new Schema<IUser>({
         type:String,
         required:true,
         trim:true,
-        lowercase:true
+        lowercase:true,
+        unique:true
     },
     password:{
         type:String,
@@ -68,6 +69,7 @@ return this.firstName + " " + this.lastName
 })
 userShema.pre("save", async function (next){
     if(this.userAgent !=USER_AGENT.google && this["isNew"] ==true){
-   await sendEmail({to : this.email , subject :"Confirm Verfy Your Accound" , html : `<h1>Verfy your Acoount is otp ${this.otp}</h1>`})
+   await sendEmail({to : this.email , subject :"Confirm Verfy Your Accound" , html : `<h1>Verfy your Acoount is otp ${this.otp} 📩</h1>`})
+   next()
    }
 })

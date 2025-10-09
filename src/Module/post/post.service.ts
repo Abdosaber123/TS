@@ -2,10 +2,9 @@ import { Request, Response } from "express";
 import { createPostDTO } from "./post.dto";
 import { PostFactory } from "./factrory";
 import { postRipository } from "../../DB/post/postRiposotry";
-import { NotFoundExpection } from "../../utils/error";
-import { log } from "console";
-import { ObjectId } from "mongoose";
-import { REACTION } from "../../utils/common/enum";
+import { NotAuthriztionExpection, NotFoundExpection } from "../../utils/error";
+import { addReactionProvider } from "../../utils/provider/reaction.provider";
+
 
 class postService {
     private readonly postFactory = new PostFactory();
@@ -26,39 +25,8 @@ class postService {
         const { id } = req.params;
 
         const { reaction } = req.body;
-        const userId = req.user._id;
-        const postExists = await this.postRepostory.exists({ _id: id });
-        if (!postExists) {
-            throw new NotFoundExpection("post not found");
-        }
-        let userReactionPostIndex = postExists.reaction.findIndex((reactions) => {
-            return reactions.userId.toString() == userId.toString();
-        });
-        if (userReactionPostIndex == -1) {
-            await this.postRepostory.update(
-                { _id: id },
-                {
-                    $push: {
-                        reaction: {
-                            reaction: [null, undefined, ""].includes(reaction)
-                                ? REACTION.like
-                                : reaction,
-                            userId,
-                        },
-                    },
-                }
-            );
-        } else if ([undefined, null, ""].includes(reaction)) {                     //lazem a send null 34an ams7 ek like
-            await this.postRepostory.update({ _id: id }, {
-                $pull :{reaction:postExists.reaction[userReactionPostIndex]}
-            })
-        }
-        else {
-            await this.postRepostory.update(
-                { _id: id, "reaction.userId": userId },
-                { "reaction.$.reaction": reaction }
-            );
-        }
+        const userId = req.user.id;
+      await  addReactionProvider(this.postRepostory , id , userId , reaction)
 
         return res.sendStatus(204);
     };
@@ -67,9 +35,17 @@ class postService {
        const post = await this.postRepostory.getOne({_id:id} ,{},{populate :[
             {path:"userId" , select: "fullName firstName lastName"},
             {path:"reaction.userId" , select: "fullName firstName lastName"},
-            {path:"comments" , match: {parentId :[]}},  // hya el mrfrod match: {parentId :[]} bs DB 34an 3mlt el esm mn
+            {path:"comments" , match: {parentId :null}},  // hya el mrfrod match: {parentId :[]} bs DB 34an 3mlt el esm mn
         ]})
         return res.status(201).json({message:"succsess" , success : true , data :{post}})
+    }
+    deletePost =async (req:Request , res:Response)=>{
+        const {id} = req.params
+        const postExists = await this.postRepostory.exists({_id:id})
+        if(!postExists) throw new NotFoundExpection("Post Not Found")
+        if(postExists.userId.toString() != req.user._id.toString()) throw new NotAuthriztionExpection("Check Authrizition")
+            await this.postRepostory.delte({_id:id})
+        return res.status(201).json({message:"Done Deleted" , Succsess:true})  
     }
 }
 export default new postService();

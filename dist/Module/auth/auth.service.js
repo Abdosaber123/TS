@@ -7,7 +7,6 @@ const sendEmail_1 = require("../../utils/sendEmail");
 const hashpassword_1 = require("../../utils/hashpassword");
 const otp_1 = require("../../utils/otp");
 const token_1 = require("../../utils/token");
-const console_1 = require("console");
 const provider_1 = require("./provider");
 class AuthService {
     userRepository = new user_reporistory_1.UserRepository();
@@ -15,7 +14,6 @@ class AuthService {
     constructor() { }
     register = async (req, res, next) => {
         const registerDTO = req.body;
-        (0, console_1.log)("wsl l hna");
         const userExists = await this.userRepository.exists({ email: registerDTO.email });
         if (userExists) {
             throw new error_1.ConflictExpection("user is Exitst");
@@ -27,7 +25,7 @@ class AuthService {
     verfyAccount = async (req, res, next) => {
         const verfy = req.body;
         await provider_1.authProvider.checkOTP(verfy);
-        this.userRepository.update({ email: verfy.email }, { isVerfy: true, $unset: { otp: "", expireOtp: "" } });
+        await this.userRepository.update({ email: verfy.email }, { isVerfy: true, $unset: { otp: "", expireOtp: "" } });
         // const userExists = await this.userRepository.getOne({email:verfy.email , otp:verfy.otp })
         // if(!userExists){
         //     throw new NotFoundExpection("user Not Found")
@@ -73,8 +71,8 @@ class AuthService {
         const expire = (0, otp_1.expirteOtp)(15 * 60 * 1000);
         await (0, sendEmail_1.sendEmail)({
             to: resend.email,
-            subject: "verfy your account",
-            html: `<p> Succsess Resend OTP ${otp}</p>`
+            subject: "Resend OTP",
+            html: `<h1> Succsess Resend OTP ${otp} 📩 </h1>`,
         });
         // this.userRepository.update({email:userExists.email }, {otp , expireOtp:expire})
         userExists.otp = otp;

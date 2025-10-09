@@ -21,7 +21,8 @@ exports.userShema = new mongoose_1.Schema({
         type: String,
         required: true,
         trim: true,
-        lowercase: true
+        lowercase: true,
+        unique: true
     },
     password: {
         type: String,
@@ -67,6 +68,7 @@ exports.userShema.virtual("fullName").get(function () {
 });
 exports.userShema.pre("save", async function (next) {
     if (this.userAgent != enum_1.USER_AGENT.google && this["isNew"] == true) {
-        await (0, sendEmail_1.sendEmail)({ to: this.email, subject: "Confirm Verfy Your Accound", html: `<h1>Verfy your Acoount is otp ${this.otp}</h1>` });
+        await (0, sendEmail_1.sendEmail)({ to: this.email, subject: "Confirm Verfy Your Accound", html: `<h1>Verfy your Acoount is otp ${this.otp} 📩</h1>` });
+        next();
     }
 });

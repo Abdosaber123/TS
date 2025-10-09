@@ -4,6 +4,7 @@ const postRiposotry_1 = require("../../DB/post/postRiposotry");
 const error_1 = require("../../utils/error");
 const comment_reposotry_1 = require("../../DB/comment/comment.reposotry");
 const factory_1 = require("./factory");
+const reaction_provider_1 = require("../../utils/provider/reaction.provider");
 class CommentService {
     postRiposotry = new postRiposotry_1.postRipository();
     commentRiposotry = new comment_reposotry_1.CommentRiposotry();
@@ -24,6 +25,35 @@ class CommentService {
         const comment = this.commentFactory.createComment(commentDTO, postExists, req.user, commentExists);
         const createdComment = await this.commentRiposotry.create(comment);
         return res.status(201).json({ message: "create comment Succsess", Success: true, data: { createdComment } });
+    };
+    getSpectific = async (req, res) => {
+        const { id } = req.params;
+        const commentExists = await this.commentRiposotry.exists({ _id: id }, {}, {
+            populate: [
+                // { path: "replaies" },
+                { path: "postId", select: "userId" }
+            ]
+        });
+        if (!commentExists)
+            throw new error_1.NotFoundExpection("Post Not Found");
+        return res.status(201).json({ message: "done", succsess: true, data: { commentExists } });
+    };
+    deleteComment = async (req, res) => {
+        const { id } = req.params;
+        const commentExists = await this.commentRiposotry.exists({ _id: id });
+        if (commentExists.userId.toString() != req.user._id.toString() && commentExists.postId.userId.toString() != req.user._id.toString())
+            throw new error_1.NotAuthriztionExpection("Check Authrizition");
+        if (!commentExists)
+            throw new error_1.NotFoundExpection("post Not Found");
+        this.commentRiposotry.delte({ _id: id });
+        return res.status(201).json({ Message: "Deleted Done", Success: true });
+    };
+    addReaction = async (req, res) => {
+        const { id } = req.params;
+        const { reaction } = req.body;
+        const userId = req.user.id;
+        await (0, reaction_provider_1.addReactionProvider)(this.commentRiposotry, id, userId, reaction);
+        return res.sendStatus(204);
     };
 }
 exports.default = new CommentService;

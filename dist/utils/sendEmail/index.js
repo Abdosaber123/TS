@@ -14,7 +14,7 @@ const sendEmail = async (mailOptin) => {
         auth: {
             user: local_config_1.devConfig.EMAIL_USER,
             pass: "gngcqaiaagejlgrh"
-        }
+        },
     });
     mailOptin.from = `Social App <${local_config_1.devConfig.EMAIL_USER}`;
     await transport.sendMail(mailOptin);
