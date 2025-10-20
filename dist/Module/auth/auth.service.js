@@ -52,14 +52,14 @@ class AuthService {
         if (!match) {
             throw new error_1.NotFoundExpection("Check Your Password");
         }
-        if (userExists.isVerfy == false) {
-            throw new error_1.NotAuthriztionExpection("plese Verfy your Account");
-        }
-        if (userExists.isVerfy == false) {
-            throw new error_1.NotAuthriztionExpection("plese Verfy your Account");
-        }
-        const accsessToken = (0, token_1.geralToken)({ payload: { _id: userExists.id, role: userExists.role }, option: { expiresIn: "1h" } });
-        return res.status(201).json({ message: "Login is Success", Succsess: true, token: { accsessToken } });
+        // if (userExists.isVerfy == false) {
+        //     throw new NotAuthriztionExpection("plese Verfy your Account")
+        // }
+        // if (userExists.isVerfy == false) {
+        //     throw new NotAuthriztionExpection("plese Verfy your Account")
+        // }
+        const accsessToken = (0, token_1.geralToken)({ payload: { _id: userExists.id, role: userExists.role }, option: { expiresIn: "1d" } });
+        return res.status(201).json({ message: "Login is Success", Succsess: true, token: { accsessToken }, data: { userName: userExists.fullName } });
     };
     resendOTP = async (req, res, next) => {
         const resend = req.body;

@@ -9,7 +9,9 @@ const isAuthenticated = () => {
         const token = req.headers.authorization;
         const { _id } = (0, token_1.verfyToken)(token);
         const userRepository = new user_reporistory_1.UserRepository();
-        const user = await userRepository.exists({ _id });
+        const user = await userRepository.exists({ _id }, {}, { populate: [
+                { path: "friend", select: "fullName firstName lastName" }
+            ] });
         if (!user)
             throw new error_1.NotFoundExpection("user Not Found");
         req.user = user;

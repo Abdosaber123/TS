@@ -8,7 +8,9 @@ export const isAuthenticated = ()=>{
     const token = req.headers.authorization as string
   const {_id} = verfyToken(token)
   const userRepository = new UserRepository()
- const user = await userRepository.exists({_id})
+ const user = await userRepository.exists({_id} , {} , {populate:[
+  {path:"friend" , select:"fullName firstName lastName"}
+ ]})
  if(!user) throw new NotFoundExpection("user Not Found")
     req.user = user
   next()

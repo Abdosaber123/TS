@@ -16,7 +16,10 @@ export interface IUser {
     phoneNumber:string,
     otp:string,
     expireOtp:Date,
-    isVerfy?:Boolean
+    isVerfy?:Boolean,
+    friendRequest:ObjectId[]
+    friend:ObjectId[]
+    block:ObjectId[]
 }
 export interface IUser{
     _id:ObjectId
@@ -39,7 +42,8 @@ export interface IPost {
     userId : ObjectId,
     reaction: IRection[],
     content:string,
-    attachments?:IAttachment[]
+    attachments?:IAttachment[],
+    isFreeze?:Boolean
 }
 export interface IAttachment{
     url:string,
@@ -53,5 +57,16 @@ export interface IComment {
     attachment?:IAttachment,
     content:string
     mention?:ObjectId[],
-    reaction:IRection[]
+    reaction:IRection[],
+    isFreeze?:Boolean
+}
+export interface IMessage {
+    content:string,
+    sender:ObjectId[],
+    attachment?:ObjectId[],
+    reactions?:IRection[]
+}
+export interface IChat{
+    users:ObjectId[],
+    message:ObjectId[]
 }

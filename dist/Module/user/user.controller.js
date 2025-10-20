@@ -10,4 +10,6 @@ const router = (0, express_1.Router)();
 router.get("/profile/:id", user_service_js_1.default.getProfile);
 router.post("/update-password", (0, authViryFy_js_1.isAuthenticated)(), user_service_js_1.default.updatePassowrd);
 router.post("/updateInfo", (0, authViryFy_js_1.isAuthenticated)(), user_service_js_1.default.updateInfo);
+router.post("/send-request/:friendId", (0, authViryFy_js_1.isAuthenticated)(), user_service_js_1.default.addRequest);
+router.put("/accept-request/:friendId", (0, authViryFy_js_1.isAuthenticated)(), user_service_js_1.default.acceptRequest);
 exports.default = router;

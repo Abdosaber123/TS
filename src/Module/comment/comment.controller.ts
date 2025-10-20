@@ -6,4 +6,6 @@ router.post("/{:id}" ,isAuthenticated() ,commentService.create)
 router.get("/:id" ,commentService.getSpectific)
 router.delete("/:id" ,commentService.deleteComment)
 router.patch("/:id" ,isAuthenticated() ,commentService.addReaction)
+router.patch("/update/:id" ,isAuthenticated() ,commentService.updateComment)
+router.patch("/freeze/:id" ,isAuthenticated() ,commentService.freezeComment)
 export default router

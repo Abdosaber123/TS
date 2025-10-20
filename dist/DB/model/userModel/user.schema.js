@@ -57,7 +57,9 @@ exports.userShema = new mongoose_1.Schema({
     },
     isVerfy: { type: Boolean, default: false },
     otp: { type: String },
-    expireOtp: { type: Date }
+    expireOtp: { type: Date },
+    friendRequest: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }],
+    friend: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "User" }]
 }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 exports.userShema.virtual("fullName").get(function () {
     return this.firstName + " " + this.lastName;

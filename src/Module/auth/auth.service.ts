@@ -57,15 +57,15 @@ class AuthService {
         if (!match) {
             throw new NotFoundExpection("Check Your Password")
         }
-        if (userExists.isVerfy == false) {
-            throw new NotAuthriztionExpection("plese Verfy your Account")
-        }
+        // if (userExists.isVerfy == false) {
+        //     throw new NotAuthriztionExpection("plese Verfy your Account")
+        // }
 
-        if (userExists.isVerfy == false) {
-            throw new NotAuthriztionExpection("plese Verfy your Account")
-        }
-        const accsessToken = geralToken({ payload: { _id: userExists.id, role: userExists.role }, option: { expiresIn: "1h" } })
-        return res.status(201).json({ message: "Login is Success", Succsess: true, token: { accsessToken } })
+        // if (userExists.isVerfy == false) {
+        //     throw new NotAuthriztionExpection("plese Verfy your Account")
+        // }
+        const accsessToken = geralToken({ payload: { _id: userExists.id, role: userExists.role }, option: { expiresIn: "1d" } })
+        return res.status(201).json({ message: "Login is Success", Succsess: true, token: { accsessToken } , data:{userName:userExists.fullName} })
     }
     resendOTP = async (req: Request, res: Response, next: NextFunction) => {
         const resend: IResendOTP = req.body

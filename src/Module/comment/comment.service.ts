@@ -52,5 +52,22 @@ class CommentService {
         await addReactionProvider(this.commentRiposotry, id, userId, reaction)
         return res.sendStatus(204);
     };
+    public updateComment = async (req:Request , res:Response)=>{
+        const {id} = req.params
+        const updateCommentDTO:commentDTO = req.body
+        const commentExists = await this.commentRiposotry.exists({ _id: id })
+        if (!commentExists) throw new NotFoundExpection("post Not Found")
+        if (commentExists.userId.toString() != req.user._id.toString() && (commentExists.postId as unknown as IPost).userId.toString() != req.user._id.toString()) throw new NotAuthriztionExpection("Check Authrizition")
+        await this.commentRiposotry.update({ _id: id },{content:updateCommentDTO.content})
+        return res.status(201).json({message:"Updated Done" , Success:true})        
+    }
+    public freezeComment = async (req:Request , res:Response)=>{
+        const {id} = req.params
+        const commentExists = await this.commentRiposotry.exists({ _id: id })
+        if (!commentExists) throw new NotFoundExpection("post Not Found")
+        if (commentExists.userId.toString() != req.user._id.toString() && (commentExists.postId as unknown as IPost).userId.toString() != req.user._id.toString()) throw new NotAuthriztionExpection("Check Authrizition")
+        await this.commentRiposotry.update({ _id: id },{isFreeze:true})
+        return res.status(201).json({message:"Freezed Done" , Success:true})        
+    }
 }
 export default new CommentService

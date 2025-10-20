@@ -23,7 +23,8 @@ export const commentSchema = new Schema<IComment>({
         type:String
     },
     attachment:{},
-    reaction: [reactionSchema ]
+    reaction: [reactionSchema ],
+    isFreeze:{type:Boolean , default:false}
 },{timestamps:true , toJSON:{virtuals:true} , toObject:{virtuals:true}})
 commentSchema.virtual("replaies",{
     ref:"Comment",
