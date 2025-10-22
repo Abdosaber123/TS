@@ -2,6 +2,9 @@ import { GraphQLID, GraphQLList, GraphQLObjectType, GraphQLString } from "graphq
 import { resolve } from "path";
 import { ChatRipository } from "../../../DB/chat/chat.ripository";
 import { MessageRipository } from "../../../DB/Message/message.repository";
+import { isAuthenticatedGraph } from "../../../Middleware/isAuthenticatedGraph";
+import { isValidGraph } from "../../../Middleware/validate.middleware Graph";
+import z from "zod";
 
 export const ChatQuery = {
     getChat: {
@@ -18,8 +21,13 @@ export const ChatQuery = {
             id: { type: GraphQLID },
             userLogin: { type: GraphQLID },
         },
-        resolve: async (parent, args) => {
-
+        resolve: async (parent, args, context) => {
+            await isAuthenticatedGraph(context)
+            isValidGraph(z.object({
+                id: z.string(),
+                userLogin: z.string(),
+            }), args)
+            console.log(context)
             const chatRepo = new ChatRipository()
             const chat = await chatRepo.getOne({
                 users: { $all: [args.id, args.userLogin] }
@@ -28,7 +36,7 @@ export const ChatQuery = {
                     { path: "message" }
                 ]
             })
-         
+
             if (!chat) throw new Error("chat not found")
             return chat
         }

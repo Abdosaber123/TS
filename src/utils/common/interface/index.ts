@@ -70,3 +70,10 @@ export interface IChat{
     users:ObjectId[],
     message:ObjectId[]
 }
+declare module "graphql"{
+    interface GraphQLError{
+        message:string,
+        errorDetals:any
+        success:boolean
+    }
+}

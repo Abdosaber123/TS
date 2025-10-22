@@ -25,7 +25,21 @@ function bootsrap(app, express) {
     app.use("/post", post_controller_1.default);
     app.use("/comment", comment_controller_1.default);
     app.use("/chat", chat_controller_1.default);
-    app.all("/graphql", (0, express_1.createHandler)({ schema: app_schema_1.appSchema }));
+    app.all("/graphql", (0, express_1.createHandler)({
+        schema: app_schema_1.appSchema, formatError: (error) => {
+            return {
+                message: error.message,
+                locations: error.locations,
+                path: error.path,
+            };
+        },
+        context: (req) => {
+            const token = req.headers["authorization"];
+            return {
+                token
+            };
+        }
+    }));
     app.use('/{*dummy}', (req, res, next) => {
         return res.status(404).json({ message: "Not Found URL" });
     });

@@ -23,7 +23,22 @@ export function bootsrap(app: Express, express: any) {
     app.use("/post", postRouter)
     app.use("/comment", routerComment)
     app.use("/chat", routerChat)
-    app.all("/graphql", createHandler({schema:appSchema}))
+    app.all("/graphql", createHandler({
+        schema: appSchema, formatError: (error: GraphQLError) => {
+            return {
+                message: error.message,
+                locations: error.locations,
+                path: error.path,
+            } as unknown as GraphQLError;
+        },
+        context: (req)=>{
+            const token = req.headers["authorization"]
+            return {
+                
+                token
+            }
+        }
+    }))
     app.use('/{*dummy}', (req, res, next) => {
         return res.status(404).json({ message: "Not Found URL" })
     })
