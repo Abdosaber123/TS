@@ -6,7 +6,7 @@ const hashpassword_1 = require("../../utils/hashpassword");
 class userService {
     userRepository = new user_reporistory_1.UserRepository();
     getProfile = async (req, res, next) => {
-        const user = await this.userRepository.getOne({ _id: req.params.id }, { email: 0 }, { populate: [
+        const user = await this.userRepository.getOne({ _id: req.params.id }, {}, { populate: [
                 { path: "friend", select: "fullName firstName lastName" }
             ] });
         // log(req.params.id)
@@ -73,6 +73,45 @@ class userService {
         ]);
         await promis;
         return res.status(201).json({ message: "Accepted", Success: true });
+    };
+    rejectRequest = async (req, res, next) => {
+        const { friendId } = req.params;
+        const promis = Promise.all([
+            this.userRepository.update({ _id: req.user._id }, {
+                $pull: { friendRequest: friendId }
+            }),
+            this.userRepository.update({ _id: friendId }, {
+                $pull: { friendRequest: req.user._id }
+            })
+        ]);
+        await promis;
+        return res.status(201).json({ message: "Rejected", Success: true });
+    };
+    deleteFriend = async (req, res, next) => {
+        const { friendId } = req.params;
+        const promis = Promise.all([
+            this.userRepository.update({ _id: req.user._id }, {
+                $pull: { friend: friendId }
+            }),
+            this.userRepository.update({ _id: friendId }, {
+                $pull: { friend: req.user._id }
+            })
+        ]);
+        await promis;
+        return res.status(201).json({ message: "Deleted", Success: true });
+    };
+    blockUser = async (req, res, next) => {
+        const { friendId } = req.params;
+        const promis = Promise.all([
+            this.userRepository.update({ _id: req.user._id }, {
+                $addToSet: { block: friendId }
+            }),
+            this.userRepository.update({ _id: friendId }, {
+                $addToSet: { block: req.user._id }
+            })
+        ]);
+        await promis;
+        return res.status(201).json({ message: "Blocked", Success: true });
     };
 }
 exports.default = new userService;

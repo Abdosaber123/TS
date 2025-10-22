@@ -4,6 +4,7 @@ import { socektAuth } from "./middelware"
 import { MessageRipository } from "../DB/Message/message.repository"
 import { ChatRipository } from "../DB/chat/chat.ripository"
 import { ObjectId } from "mongoose"
+import z from "zod"
 const connectedUser = new Map<string, string>()
 let currentName = new Map<string, string>()
 export const initSocket = (server: httpServer) => {
@@ -21,7 +22,16 @@ export const initSocket = (server: httpServer) => {
         const onlineUsers = Array.from(userMap.values()).map(name => ({ username: name }));
         socket.emit("users", onlineUsers)
         socket.emit("user", socket.data.user.id)
-        socket.on("send_message", async (data: { message: string, destId: string }) => {
+        socket.on("send_message", async (data: { message: string, destId: string }) => {0
+            let validation = z.object({
+                message: z.string().min(1).max(1000),
+                destId: z.string(),
+            })
+            const result = validation.safeParse(data)
+            if (!result.success) {
+                socket.emit("error", result.error.issues[0].message)
+                return
+            }
             const destSocket = connectedUser.get(data.destId)
             socket.emit("successMessage", data);
             io.to(destSocket).emit("reciverMessage", data)
@@ -39,6 +49,14 @@ export const initSocket = (server: httpServer) => {
             }else{
                 await chatrepo.update({_id:chat._id},{$push:{message:createdMessage._id}})
             }
+        })
+        socket.on("typing",(data:{message:string,destId:string})=>{
+                const destSocket = connectedUser.get(data.destId)
+                io.to(destSocket).emit("typing",data)
+        })
+        socket.on("stop_typing",(data:{message:string,destId:string})=>{
+                const destSocket = connectedUser.get(data.destId)
+                io.to(destSocket).emit("stop_typing",data)
         })
 
     })

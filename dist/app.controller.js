@@ -11,6 +11,8 @@ const user_controller_1 = __importDefault(require("./Module/user/user.controller
 const comment_controller_1 = __importDefault(require("./Module/comment/comment.controller"));
 const chat_controller_1 = __importDefault(require("./Module/chat/chat.controller"));
 const cors_1 = __importDefault(require("cors"));
+const express_1 = require("graphql-http/lib/use/express");
+const app_schema_1 = require("./app.schema");
 function bootsrap(app, express) {
     //     app.use(cors({
     //   origin: "http://localhost:3000", // ده عنوان الـ frontend     lw h7t akrer mn linl ["link1" , "link 2"]
@@ -23,6 +25,7 @@ function bootsrap(app, express) {
     app.use("/post", post_controller_1.default);
     app.use("/comment", comment_controller_1.default);
     app.use("/chat", chat_controller_1.default);
+    app.all("/graphql", (0, express_1.createHandler)({ schema: app_schema_1.appSchema }));
     app.use('/{*dummy}', (req, res, next) => {
         return res.status(404).json({ message: "Not Found URL" });
     });

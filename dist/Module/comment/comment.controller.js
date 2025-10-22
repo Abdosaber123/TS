@@ -11,4 +11,6 @@ router.post("/{:id}", (0, authViryFy_1.isAuthenticated)(), comment_service_1.def
 router.get("/:id", comment_service_1.default.getSpectific);
 router.delete("/:id", comment_service_1.default.deleteComment);
 router.patch("/:id", (0, authViryFy_1.isAuthenticated)(), comment_service_1.default.addReaction);
+router.patch("/update/:id", (0, authViryFy_1.isAuthenticated)(), comment_service_1.default.updateComment);
+router.patch("/freeze/:id", (0, authViryFy_1.isAuthenticated)(), comment_service_1.default.freezeComment);
 exports.default = router;
